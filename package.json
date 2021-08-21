@@ -1,13 +1,7 @@
 {
-  "name": "template",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js"
   },
-  "author": "Jonathan Heard",
-  "license": "MIT",
   "devDependencies": {
     "@ci-types/cjs": "^1.0.3",
     "ts-loader": "^9.2.5",
