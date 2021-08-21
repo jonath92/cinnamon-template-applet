@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "lib": [
+            // important to hide default typescript libraries (such as DOM elements): https://stackoverflow.com/questions/57336918/disable-intellisense-for-default-typescript-libraries-in-vscode
+            "es2017"
+        ],
+        "moduleResolution": "Node",
+        "sourceMap": true,
+        "target": "es2017",
+
+        // ignore global types from node_modules https://stackoverflow.com/a/54277766/11603006 (important for not showing node globals such as console in intelisense)
+        "types": [],
+
+        // STRICT CONFIGURATION
+        "noFallthroughCasesInSwitch": true,
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "noImplicitOverride": true,
+        "strictBindCallApply": true,
+		"strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+    },
+    "include": [
+        "./src/**/*",
+    ]
+}
