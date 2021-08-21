@@ -1,4 +1,4 @@
-This repo can be used as a template to create linux mint applets with Typescript and webpack support (which allows to use node packages).
+This repo can be used as a template to create Cinnamon applets with Typescript and webpack support (which allows to use node packages).
 
 # Installation
 
@@ -42,8 +42,8 @@ npm run build
 
 The three files created in the `files/appletName]@[authorName]` will be overwritten each time calling the command `npm run build` and therefore should be untouched.
 
-For setting the Applet metadtaa (e.g. the name and description shown in the Cinnamon Applets Dialogue) change the variables in the `webpack.config.js` file.
+For setting the Applet metadata (e.g. the name and description shown in the Cinnamon Applets Dialogue) change the variables in the `webpack.config.js` file.
 
-It is no problem to add more files (such as a `icon.png` which is required to publish the applet) to the `files/appletName]@[authorName]` directory - all files excepct from the thee auto generated files will be untouches when running the build command.
+It is no problem to add more files (such as a `icon.png` which is required to publish the applet) to the `files/appletName]@[authorName]` directory - all files excepct from the three auto generated files will be untouched when running the build command.
 
 It is also no problem to rename the applet by changing the parent direcoty name. In that case it will be generated a new directory inside the `files` directory when running `npm run build`. However additional files added to the `files/appletName]@[authorName]` directory must be copied to the new folder manually and also the old direcotry must be deleted manually (therefore it might be necessary to run the build command twice to fully apply the changes)
