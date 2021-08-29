@@ -11,7 +11,7 @@ module.exports = {
     // clearMocks: true, 
     globals: {
         "ts-jest": {
-            tsconfig: './test/tsconfig.json'
+            tsconfig: './tests/tsconfig.json'
         }, 
         "__meta": {
             uuid: UUID
