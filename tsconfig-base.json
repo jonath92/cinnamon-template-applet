@@ -8,8 +8,10 @@
         "sourceMap": true,
         "target": "es2017",
 
+        "baseUrl": "./src/",
+
         // ignore global types from node_modules https://stackoverflow.com/a/54277766/11603006 (important for not showing node globals such as console in intelisense)
-        "types": [],
+       // "types": [],
 
         // STRICT CONFIGURATION
         "noFallthroughCasesInSwitch": true,
@@ -19,11 +21,8 @@
         "noImplicitReturns": true,
         "noImplicitOverride": true,
         "strictBindCallApply": true,
-	"strictFunctionTypes": true,
+        "strictFunctionTypes": true,
         "strictNullChecks": true,
         "strictPropertyInitialization": true,
-    },
-    "include": [
-        "./src/**/*",
-    ]
+    }
 }
