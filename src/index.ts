@@ -1,4 +1,7 @@
+import { Service } from "dbus-service"
+
 const { IconApplet } = imports.ui.applet
+
 
 interface Arguments {
     orientation: imports.gi.St.Side,
@@ -13,6 +16,8 @@ export function main(args: Arguments): imports.ui.applet.Applet {
         panelHeight,
         instanceId
     } = args
+
+    const service = new Service()
 
     const myApplet = new IconApplet(orientation, panelHeight, instanceId)
 
