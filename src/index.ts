@@ -1,5 +1,11 @@
 import { Service, } from 'dbus-service'
 
+interface Andyholmes extends imports.gi.Gio.DBusProxy {
+  SimpleMethodSync: () => void
+}
+
+
+
 const { IconApplet } = imports.ui.applet
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
@@ -49,13 +55,18 @@ export function main(args: Arguments): imports.ui.applet.Applet {
 
         const proxy = Gio.DBusProxy.makeProxyWrapper(ifaceXml)
 
+        
+        
+        const dummy2 = new proxy() as Andyholmes
+        dummy2.SimpleMethodSync()
+      
+
+
         //@ts-ignore
         const dummy = new proxy(Gio.DBus.session, 'io.github.andyholmes.Test', '/io/github/andyholmes/Test' )
 
         //@ts-ignore
         global.log(dummy.ReadOnlyProperty)
-        //@ts-ignore
-        global.log(dummy.SimpleMethodSync())
 
     }
 
