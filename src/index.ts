@@ -2,6 +2,8 @@ import { Service, } from 'dbus-service'
 
 interface Andyholmes extends imports.gi.Gio.DBusProxy {
   SimpleMethodSync: () => void
+  readonly ReadOnlyProperty: string,
+  ReadWriteProperty: boolean
 }
 
 
@@ -30,45 +32,39 @@ const ifaceXml = `
 </node>`;
 
 interface Arguments {
-    orientation: imports.gi.St.Side,
-    panelHeight: number,
-    instanceId: number
+  orientation: imports.gi.St.Side,
+  panelHeight: number,
+  instanceId: number
 }
 
 export function main(args: Arguments): imports.ui.applet.Applet {
 
-    const {
-        orientation,
-        panelHeight,
-        instanceId
-    } = args
+  const {
+    orientation,
+    panelHeight,
+    instanceId
+  } = args
 
 
 
 
-    const myApplet = new IconApplet(orientation, panelHeight, instanceId)
+  const myApplet = new IconApplet(orientation, panelHeight, instanceId)
 
-    myApplet.set_applet_icon_symbolic_name('computer')
-    myApplet.on_applet_clicked = () => {
+  myApplet.set_applet_icon_symbolic_name('computer')
+  myApplet.on_applet_clicked = () => {
 
-        global.log(getDBus().ListNamesSync())
+    // global.log(getDBus().ListNamesSync())
 
-        const proxy = Gio.DBusProxy.makeProxyWrapper(ifaceXml)
-
-        
-        
-        const dummy2 = new proxy() as Andyholmes
-        dummy2.SimpleMethodSync()
-      
+    const proxy = Gio.DBusProxy.makeProxyWrapper(ifaceXml)
 
 
-        //@ts-ignore
-        const dummy = new proxy(Gio.DBus.session, 'io.github.andyholmes.Test', '/io/github/andyholmes/Test' )
+    const dummy = new proxy(Gio.DBus.session, 'io.github.andyholmes.Test', '/io/github/andyholmes/Test') as Andyholmes
 
-        //@ts-ignore
-        global.log(dummy.ReadOnlyProperty)
+    dummy.SimpleMethodSync()
 
-    }
+    global.log(dummy.ReadOnlyProperty)
 
-    return myApplet
+  }
+
+  return myApplet
 }
