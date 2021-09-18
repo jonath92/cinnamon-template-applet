@@ -1,12 +1,11 @@
+
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 
-/*
- * An XML DBus Interface
- */
+// We'll use our XML definition from earlier as an example
 const ifaceXml = `
 <node>
-  <interface name="org.gnome.gjs.Test">
+  <interface name="org/gnome/gjs/Test">
     <method name="SimpleMethod"/>
     <method name="ComplexMethod">
       <arg type="s" direction="in" name="input"/>
@@ -21,16 +20,38 @@ const ifaceXml = `
   </interface>
 </node>`;
 
-// An example of the service-side implementation of the above interface.
 export class Service {
+  constructor() {
+  }
 
-    // @ts-ignore
-    public dbus = Gio.DBusExportedObject
+  // Properties
+  get ReadOnlyProperty() {
+    return 'a string';
+  }
 
-    constructor(){
-        // @ts-ignore
-        this.dbus = Gio.DBusExportedObject.wrapJSObject(ifaceXml, this);
-        global.log('this.dbus', this.dbus)
-    }
+  get ReadWriteProperty() {
+    //@ts-ignore
+    if (this._readWriteProperty === undefined)
+      return false;
+    //@ts-ignore
 
+    return this._readWriteProperty;
+  }
+
+  set ReadWriteProperty(value) {
+    //@ts-ignore
+
+    this._readWriteProperty = value;
+  }
+
+  // Methods
+  SimpleMethod() {
+    global.log('SimpleMethod() invoked');
+  }
+
+  ComplexMethod(input: string[]) {
+    global.log(`ComplexMethod() invoked with '${input}'`);
+
+    return input.length;
+  }
 }
