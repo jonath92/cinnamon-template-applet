@@ -21,6 +21,7 @@ const ifaceXml = `
   </interface>
 </node>`;
 
+
 class Service {
     constructor() {
     }
@@ -56,10 +57,10 @@ class Service {
 // Note that when using the DBus conveniences in GJS, our JS Object instance is
 // separate from the interface GObject instance.
 let serviceObject = new Service();
-let serviceIface = null;
+//let serviceIface = null;
 
 function onBusAcquired(connection, name) {
-    serviceIface = Gio.DBusExportedObject.wrapJSObject(ifaceXml, this);
+    const serviceIface = Gio.DBusExportedObject.wrapJSObject(ifaceXml, serviceObject);
     serviceIface.export(connection, '/io/github/andyholmes/Test');
 }
 
@@ -76,7 +77,7 @@ let ownerId = Gio.bus_own_name(
     Gio.BusType.SESSION,
     'io.github.andyholmes.Test',
     Gio.BusNameOwnerFlags.NONE,
-    onBusAcquired.bind(serviceObject),
+    onBusAcquired,
     onNameAcquired,
     onNameLost
 );
