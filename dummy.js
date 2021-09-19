@@ -1,5 +1,3 @@
-'use strict';
-
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 
@@ -20,7 +18,6 @@ const ifaceXml = `
     <property name="ReadWriteProperty" type="b" access="readwrite"/>
   </interface>
 </node>`;
-
 
 class Service {
     constructor() {
@@ -57,10 +54,10 @@ class Service {
 // Note that when using the DBus conveniences in GJS, our JS Object instance is
 // separate from the interface GObject instance.
 let serviceObject = new Service();
-//let serviceIface = null;
+let serviceIface = null;
 
 function onBusAcquired(connection, name) {
-    const serviceIface = Gio.DBusExportedObject.wrapJSObject(ifaceXml, serviceObject);
+    serviceIface = Gio.DBusExportedObject.wrapJSObject(ifaceXml, this);
     serviceIface.export(connection, '/io/github/andyholmes/Test');
 }
 
@@ -77,7 +74,7 @@ let ownerId = Gio.bus_own_name(
     Gio.BusType.SESSION,
     'io.github.andyholmes.Test',
     Gio.BusNameOwnerFlags.NONE,
-    onBusAcquired,
+    onBusAcquired.bind(serviceObject),
     onNameAcquired,
     onNameLost
 );
