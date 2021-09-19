@@ -1,7 +1,7 @@
-import { Service, } from 'dbus-service'
 
 interface Andyholmes extends imports.gi.Gio.DBusProxy {
   SimpleMethodSync: () => void
+  ComplexMethodSync: (input: string) => [number]
   readonly ReadOnlyProperty: string,
   ReadWriteProperty: boolean
 }
@@ -11,6 +11,7 @@ interface Andyholmes extends imports.gi.Gio.DBusProxy {
 const { IconApplet } = imports.ui.applet
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
+const Mainloop = imports.mainloop
 
 const { getDBusProperties, getDBus, getDBusProxyWithOwner } = imports.misc.interfaces
 
@@ -37,6 +38,79 @@ interface Arguments {
   instanceId: number
 }
 
+class Service {
+
+  private _readWriteProperty: boolean = false
+
+  constructor() {
+
+  }
+
+  get ReadOnlyProperty() {
+    return 'a string';
+  }
+
+  // TODO: getter and setter necessary?
+  get ReadWriteProperty() {
+    return this._readWriteProperty
+  }
+
+  set ReadWritePoperty(newValue: boolean) {
+    this._readWriteProperty = newValue
+  }
+
+  SimpleMethod() {
+    global.log('SimpleMethod invoked')
+    return
+  }
+
+  ComplexMethod(input: string) {
+    global.log(`ComplexMethod invoked with ${input}`)
+    return input.length
+  }
+
+}
+
+
+function serveDbus() {
+  global.log('serveDBu called')
+
+  let serviceObject = new Service()
+
+  let serviceIface: imports.gi.Gio.DBusInterfaceSkeleton | null = null
+
+  let dbusConnection: imports.gi.Gio.DBusConnection | null = null
+
+  function onBusAcquired(connection: imports.gi.Gio.DBusConnection, name: string) {
+    serviceIface = Gio.DBusExportedObject.wrapJSObject(ifaceXml, serviceObject)
+    serviceIface.export(connection, '/io/github/andyholmes/Test')
+    // dbusConnection = connection
+  }
+
+  function onNameAcquired(connection: imports.gi.Gio.DBusConnection, name: string) {
+    global.log('name acquired')
+    // Clients will typically start connecting and using your interface now.
+  }
+
+  function onNameLost(connection: imports.gi.Gio.DBusConnection, name: string) {
+    global.log('name lost')
+    // Well behaved clients will know not to be calling methods on your
+    // interface now.
+  }
+
+  Gio.bus_own_name(
+    Gio.BusType.SESSION,
+    'io.github.andyholmes.Test',
+    Gio.BusNameOwnerFlags.NONE,
+    onBusAcquired,
+    onNameAcquired,
+    onNameLost
+  );
+  // Start an event loop
+
+  // return dbusConnection
+}
+
 export function main(args: Arguments): imports.ui.applet.Applet {
 
   const {
@@ -46,25 +120,57 @@ export function main(args: Arguments): imports.ui.applet.Applet {
   } = args
 
 
+  //serveDbus()
+
+  //global.log('dbusConnection', dbusConnection)
 
 
   const myApplet = new IconApplet(orientation, panelHeight, instanceId)
 
+  myApplet.on_applet_middle_clicked = () => {
+
+
+    //
+  }
+
+
+  let proxy: Andyholmes | null = null
+
+
   myApplet.set_applet_icon_symbolic_name('computer')
   myApplet.on_applet_clicked = () => {
 
-    // global.log(getDBus().ListNamesSync())
+    const dbusRegistered = getDBus().ListNamesSync()[0].find(name => name === 'io.github.andyholmes.Test')
 
-    const proxy = Gio.DBusProxy.makeProxyWrapper(ifaceXml)
+    global.log('dbusRegistered', dbusRegistered)
+
+    if (!proxy) {
+      const Proxy = Gio.DBusProxy.makeProxyWrapper(ifaceXml)
+
+      new Proxy(Gio.DBus.session, 'io.github.andyholmes.Test', '/io/github/andyholmes/Test', (newProxy: Andyholmes) => {
+        proxy = newProxy
+        global.log('proxy callback called')
+        global.log(proxy.ReadWriteProperty)
+      })
+    }
+
+    else {
+      proxy.ComplexMethodSync('test')
+    }
 
 
-    const dummy = new proxy(Gio.DBus.session, 'io.github.andyholmes.Test', '/io/github/andyholmes/Test') as Andyholmes
 
-    dummy.SimpleMethodSync()
-
-    global.log(dummy.ReadOnlyProperty)
-
+    // try {
+    //   const dummy = new proxy(Gio.DBus.session, 'io.github.andyholmes.Test', '/io/github/andyholmes/Test') as Andyholmes
+    //   dummy.SimpleMethodSync()
+    // } catch (error) {
+    //   global.log(error)
+    // }
   }
+
+
+  // @ts-ignore
+  //myApplet.dbusConnection = dbusConnection
 
   return myApplet
 }
