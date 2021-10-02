@@ -1,3 +1,4 @@
+import { getClient, serveDbus } from "dbus";
 
 interface Andyholmes extends imports.gi.Gio.DBusProxy {
   SimpleMethodSync: () => void
@@ -38,84 +39,84 @@ interface Arguments {
   instanceId: number
 }
 
-class Service {
+// class Service {
 
-  private _readWriteProperty: boolean = false
+//   private _readWriteProperty: boolean = false
 
-  constructor() {
+//   constructor() {
 
-  }
+//   }
 
-  get ReadOnlyProperty() {
-    return 'a string';
-  }
+//   get ReadOnlyProperty() {
+//     return 'a string';
+//   }
 
-  // TODO: getter and setter necessary?
-  get ReadWriteProperty() {
-    return this._readWriteProperty
-  }
+//   // TODO: getter and setter necessary?
+//   get ReadWriteProperty() {
+//     return this._readWriteProperty
+//   }
 
-  set ReadWritePoperty(newValue: boolean) {
-    this._readWriteProperty = newValue
-  }
+//   set ReadWritePoperty(newValue: boolean) {
+//     this._readWriteProperty = newValue
+//   }
 
-  SimpleMethod() {
-    global.log('SimpleMethod invoked')
-    return
-  }
+//   SimpleMethod() {
+//     global.log('SimpleMethod invoked')
+//     return
+//   }
 
-  ComplexMethod(input: string) {
-    global.log(`ComplexMethod invoked with ${input}`)
-    return input.length
-  }
+//   ComplexMethod(input: string) {
+//     global.log(`ComplexMethod invoked with ${input}`)
+//     return input.length
+//   }
 
-}
-
-
-async function serveDbus(): Promise<imports.gi.Gio.DBusConnection> {
+// }
 
 
-  return new Promise<imports.gi.Gio.DBusConnection>((resolve, reject) => {
-    global.log('serveDBu called')
-
-    let serviceObject = new Service()
-
-    let serviceIface: imports.gi.Gio.DBusInterfaceSkeleton | null = null
+// async function serveDbus(): Promise<imports.gi.Gio.DBusConnection> {
 
 
-    function onBusAcquired(connection: imports.gi.Gio.DBusConnection, name: string) {
-      serviceIface = Gio.DBusExportedObject.wrapJSObject(ifaceXml, serviceObject)
-      serviceIface.export(connection, '/io/github/andyholmes/Test')
-      resolve(connection)
-    }
+//   return new Promise<imports.gi.Gio.DBusConnection>((resolve, reject) => {
+//     global.log('serveDBu called')
 
-    function onNameAcquired(connection: imports.gi.Gio.DBusConnection, name: string) {
-      global.log('name acquired')
-      // Clients will typically start connecting and using your interface now.
-    }
+//     let serviceObject = new Service()
 
-    function onNameLost(connection: imports.gi.Gio.DBusConnection, name: string) {
-      global.log('name lost')
-      // Well behaved clients will know not to be calling methods on your
-      // interface now.
-    }
-
-    Gio.bus_own_name(
-      Gio.BusType.SESSION,
-      'io.github.andyholmes.Test',
-      Gio.BusNameOwnerFlags.NONE,
-      onBusAcquired,
-      onNameAcquired,
-      onNameLost
-    );
-
-  })
+//     let serviceIface: imports.gi.Gio.DBusInterfaceSkeleton | null = null
 
 
-  // Start an event loop
+//     function onBusAcquired(connection: imports.gi.Gio.DBusConnection, name: string) {
+//       serviceIface = Gio.DBusExportedObject.wrapJSObject(ifaceXml, serviceObject)
+//       serviceIface.export(connection, '/io/github/andyholmes/Test')
+//       resolve(connection)
+//     }
 
-  // return dbusConnection
-}
+//     function onNameAcquired(connection: imports.gi.Gio.DBusConnection, name: string) {
+//       global.log('name acquired')
+//       // Clients will typically start connecting and using your interface now.
+//     }
+
+//     function onNameLost(connection: imports.gi.Gio.DBusConnection, name: string) {
+//       global.log('name lost')
+//       // Well behaved clients will know not to be calling methods on your
+//       // interface now.
+//     }
+
+//     Gio.bus_own_name(
+//       Gio.BusType.SESSION,
+//       'io.github.andyholmes.Test',
+//       Gio.BusNameOwnerFlags.NONE,
+//       onBusAcquired,
+//       onNameAcquired,
+//       onNameLost
+//     );
+
+//   })
+
+
+//   // Start an event loop
+
+//   // return dbusConnection
+// }
 
 export function main(args: Arguments): imports.ui.applet.Applet {
 
@@ -132,37 +133,23 @@ export function main(args: Arguments): imports.ui.applet.Applet {
   const myApplet = new IconApplet(orientation, panelHeight, instanceId)
 
 
-  let proxy: Andyholmes | null = null
+  let dbusClient: Andyholmes | null = null
 
 
   myApplet.set_applet_icon_symbolic_name('computer')
   myApplet.on_applet_clicked = async () => {
 
-    if (!dbusConnection) {
-      dbusConnection = await serveDbus()
-    }
+    // if (!dbusConnection) {
+    //   dbusConnection = await serveDbus()
+    // }
 
     const dbusRegistered = getDBus().ListNamesSync()[0].find(name => name === 'io.github.andyholmes.Test')
 
     global.log('dbusRegistered', dbusRegistered)
 
-    if (!proxy) {
-      const Proxy = Gio.DBusProxy.makeProxyWrapper(ifaceXml)
-
-      new Proxy(Gio.DBus.session, 'io.github.andyholmes.Test', '/io/github/andyholmes/Test', (newProxy: Andyholmes) => {
-        proxy = newProxy
-        global.log('proxy callback called')
-        global.log(proxy.ReadWriteProperty)
-      })
-    }
-
-    else {
-      // TODO: only working with Remote!
+    const client = await getClient()
       // @ts-ignore
-      proxy.ComplexMethodRemote('test')
-    }
-
-
+    client.ComplexMethodRemote('test')
 
     // try {
     //   const dummy = new proxy(Gio.DBus.session, 'io.github.andyholmes.Test', '/io/github/andyholmes/Test') as Andyholmes
