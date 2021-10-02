@@ -73,7 +73,7 @@ class Service {
 }
 
 // TODO: remove export once it is working
-export async function serveDbus(): Promise<imports.gi.Gio.DBusConnection> {
+async function serveDbus(): Promise<imports.gi.Gio.DBusConnection> {
 
   // TODO reject when not resolved after 10 secs
   return new Promise<imports.gi.Gio.DBusConnection>((resolve, reject) => {
@@ -117,14 +117,12 @@ export async function serveDbus(): Promise<imports.gi.Gio.DBusConnection> {
 
 export async function getClient(): Promise<Andyholmes> {
 
-    if (!dbusConnection) {
-      global.log('before await serveDbus')
-      dbusConnection = await serveDbus()
+  if (!dbusConnection) {
+    dbusConnection = await serveDbus()
   }
 
   return new Promise((resolve, reject) => {
-    if (dbusClient){
-      global.log('in dbusClient')
+    if (dbusClient) {
       resolve(dbusClient)
       return
     }
@@ -139,44 +137,4 @@ export async function getClient(): Promise<Andyholmes> {
   })
 }
 
-
-// export async function getClient(): Promise<Andyholmes> {
-
-//   global.log('getClient called')
-
-//   // TODO better error handling
-//   if (!dbusConnection) {
-//     global.log('before await serveDbus')
-//     dbusConnection = await serveDbus()
-//   }
-
-//   const dbusRegistered = getDBus().ListNamesSync()[0].find(name => name === 'io.github.andyholmes.Test')
-
-//   global.log('dbusRegistered', dbusRegistered)
-
-//   await wait5Secs()
-
-//   global.log('after await serveDbus')
-
-//   return new Promise((resolve, reject) => {
-
-//     global.log('in Promise')
-
-//     if (dbusClient){
-//       global.log('in dbusClient')
-//       resolve(dbusClient)
-//       return
-//     }
-
-//     const ProxyWrapper = Gio.DBusProxy.makeProxyWrapper(ifaceXml)
-  
-//     new ProxyWrapper(Gio.DBus.session, 'io.github.andyholmes.Test', 'io/giithub/andyholmes/Test', (newClient: Andyholmes) => {
-
-//       global.log('callback of newProxyWrapper')
-//       dbusClient = newClient
-//       resolve(newClient)
-//     } )
-//   })
-
-// }
 
