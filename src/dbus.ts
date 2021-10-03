@@ -1,6 +1,5 @@
 const { spawnCommandLine } = imports.misc.util;
 const Gio = imports.gi.Gio;
-const { getDBusProperties, getDBus, getDBusProxyWithOwner } = imports.misc.interfaces
 
 const ifaceXml = `
 <node>
@@ -34,6 +33,8 @@ interface Andyholmes extends imports.gi.Gio.DBusProxy {
 let dbusConnection: imports.gi.Gio.DBusConnection | null = null
 let dbusClient: Andyholmes | null = null
 
+const socketServerPath = '/tmp/mpvsocket'
+
 class Service {
 
   private _readWriteProperty: boolean = false
@@ -57,7 +58,7 @@ class Service {
 
   OpenUri(uri: string) {
     global.log('OpenUri called')
-    spawnCommandLine(`mpv ${uri} --input-ipc-server=/tmp/mpvsocket`)
+    spawnCommandLine(`mpv ${uri} --input-ipc-server=${socketServerPath}`)
   }
 
   SimpleMethod() {
