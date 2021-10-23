@@ -1,4 +1,4 @@
-This repo can be used as a template to create Cinnamon applets with Typescript and webpack support (which allows to use node packages).
+This repo can be used as a template to create Cinnamon applets with Typescript and webpack support (which allows to use node packages)
 
 # Installation
 
