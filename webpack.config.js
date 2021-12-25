@@ -13,7 +13,6 @@ const CINNAMON_VERSION = null // When set to null, the build output path is set 
 // Automatic calculated constants
 const UUID = __dirname.split('/').slice(-1)[0]
 const APPLET_SHORT_NAME = UUID.split('@')[0]
-// could both also be any other name
 const BUNDLED_FILE_NAME = `${APPLET_SHORT_NAME}-applet.js`
 const LIBRARY_NAME = `${APPLET_SHORT_NAME}Applet`
 const FILES_DIR = `${__dirname}/files/${UUID}`
