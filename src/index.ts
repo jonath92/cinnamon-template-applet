@@ -1,23 +1,26 @@
-const { IconApplet } = imports.ui.applet
+import { createAppletContainer } from "lib/AppletContainer"
+import { createAppletIcon } from "lib/AppletIcon"
 
-interface Arguments {
-    orientation: imports.gi.St.Side,
-    panelHeight: number,
-    instanceId: number
+const { IconType } = imports.gi.St
+
+declare global {
+    // added during build (see webpack.config.js)
+    interface Meta {
+        instanceId: number
+        orientation: imports.gi.St.Side
+    }
 }
 
-export function main(args: Arguments): imports.ui.applet.Applet {
+export function main(): imports.ui.applet.Applet {
 
-    const {
-        orientation,
-        panelHeight,
-        instanceId
-    } = args
+    const appletContainer = createAppletContainer()
 
-    const myApplet = new IconApplet(orientation, panelHeight, instanceId)
+    const appletIcon = createAppletIcon({
+        icon_type: IconType.SYMBOLIC,
+        icon_name: 'computer'
+    })
 
-    myApplet.set_applet_icon_symbolic_name('computer')
-    myApplet.on_applet_clicked = () => global.log('applet clicked')
+    appletContainer.actor.add_child(appletIcon)
 
-    return myApplet
+    return appletContainer
 }
