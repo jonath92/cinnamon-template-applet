@@ -8,6 +8,7 @@
         "sourceMap": true,
         "target": "es2017",
         "baseUrl": "./src/",
+        "exactOptionalPropertyTypes": true,
 
         // STRICT CONFIGURATION
         "noFallthroughCasesInSwitch": true,
