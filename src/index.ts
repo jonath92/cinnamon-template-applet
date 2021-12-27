@@ -8,6 +8,8 @@ declare global {
     interface Meta {
         instanceId: number
         orientation: imports.gi.St.Side
+        panel: imports.ui.panel.Panel
+        locationLabel: imports.ui.appletManager.LocationLabel
     }
 }
 
