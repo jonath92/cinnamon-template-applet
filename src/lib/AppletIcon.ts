@@ -1,7 +1,7 @@
-const { getAppletDefinition } = imports.ui.appletManager;
 const { Icon, IconType } = imports.gi.St
 const { Point } = imports.gi.Clutter
 
+// TODO: make props Omit icon-size and style_class
 export function createAppletIcon(props?: ConstructorParameters<typeof Icon>[0]) {
 
     const icon_type = props?.icon_type || IconType.SYMBOLIC
