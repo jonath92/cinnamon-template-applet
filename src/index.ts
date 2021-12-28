@@ -1,17 +1,9 @@
 import { createAppletContainer } from "lib/AppletContainer"
 import { createAppletIcon } from "lib/AppletIcon"
+import { createTooltip } from "lib/Tooltip"
 
+const { uiGroup } = imports.ui.main
 const { IconType } = imports.gi.St
-
-declare global {
-    // added during build (see webpack.config.js)
-    interface Meta {
-        instanceId: number
-        orientation: imports.gi.St.Side
-        panel: imports.ui.panel.Panel
-        locationLabel: imports.ui.appletManager.LocationLabel
-    }
-}
 
 export function main(): imports.ui.applet.Applet {
 
@@ -23,6 +15,19 @@ export function main(): imports.ui.applet.Applet {
     })
 
     appletContainer.actor.add_child(appletIcon)
+
+    const transformed = appletContainer.actor.get_transformed_position()
+
+    const appletTooltip = createTooltip({
+        text: 'my tooltip',
+        getAbsolutePosition: () => appletContainer.actor.get_transformed_position(),
+        visible: true
+    })
+
+    // TODO: replace with add-child
+    uiGroup.add_actor(appletTooltip)
+
+    // appletTooltip.raise_top()
 
     return appletContainer
 }

@@ -1,26 +1,60 @@
 const { Label } = imports.gi.St
-const { uiGroup } = imports.ui.main
 const { Settings } = imports.gi.Gio
 
 type LabelProps = ConstructorParameters<typeof Label>[0]
+const { PanelLoc } = imports.ui.panel
 
-type Props = LabelProps & {
-    monitor: number
+
+type TooltipProps = LabelProps & {
+    getAbsolutePosition: InstanceType<typeof imports.gi.Clutter.Actor>['get_transformed_position']
 }
 
-export function createTooltip(props: Props) {
+export function createTooltip(props: TooltipProps) {
 
-    const {monitor, ...labelProps} = props
+    const { getAbsolutePosition, ...labelProps } = props
 
-    const tooltip = new Label(labelProps)
+    const panel = __meta.panel
+    const { monitor, panelPosition } = panel
 
-    // TODO: replace with add-child
-    uiGroup.add_actor(tooltip)
-    const desktopSettings = new Settings({
-        schema_id: 'org.cinnamon.desktop.interface'
+    const isVertial = [PanelLoc.top, PanelLoc.bottom].includes(panelPosition)
+
+    const tooltip = new Label({
+        name: 'Tooltip', // needed for style
+        ...labelProps
     })
 
-    
+    const getTooltipTop = () => {
+
+        if (!isVertial) {
+            return getAbsolutePosition()[1] || 0
+        }
+
+        if (panelPosition === PanelLoc.top) {
+            return monitor.y + panel.actor.height
+        }
+
+        // panelLoc = bottom
+        const naturalHeight = tooltip.get_preferred_size()[3]
+        return monitor.y + monitor.height - (naturalHeight || 0) - panel.actor.height
+    }
+
+
+    global.log(`pointer: ${global.get_pointer()[0]}, topPos: ${getTooltipTop()}`)
+
+    tooltip.set_position(global.get_pointer()[0], getTooltipTop())
+
+
+
+    const show = () => {
+        tooltip.show()
+
+        const [minWidth, minHeight, naturalWidth, naturalHeight] = tooltip.get_preferred_size()
+
+
+    }
+
+    return tooltip
+
 
 
 }
