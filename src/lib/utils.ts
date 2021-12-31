@@ -8,7 +8,7 @@ interface FreeSpaceBox {
     right: number
 }
 
-function calculateFreeSpace(): FreeSpaceBox {
+export function calculateFreeSpace(): FreeSpaceBox {
     const monitor = layoutManager.findMonitorForActor(__meta.panel.actor)
     const visiblePanels = panelManager.getPanelsInMonitor(monitor.index)
 
