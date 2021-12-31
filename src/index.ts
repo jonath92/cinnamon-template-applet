@@ -24,8 +24,7 @@ export function main(): imports.ui.applet.Applet {
         visible: true
     })
 
-    // TODO: replace with add-child
-    uiGroup.add_actor(appletTooltip)
+    uiGroup.add_child(appletTooltip)
 
     // appletTooltip.raise_top()
 
