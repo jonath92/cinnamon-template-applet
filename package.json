@@ -4,7 +4,7 @@
     "test": "jest --watchAll"
   },
   "devDependencies": {
-    "@ci-types/cjs": "^1.0.16",
+    "@ci-types/cjs": "^1.0.24",
     "@types/jest": "^27.0.1",
     "cjs-jest-test-runtime": "^1.0.0",
     "jest": "^27.1.0",
